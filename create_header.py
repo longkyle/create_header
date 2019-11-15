@@ -33,10 +33,15 @@ def main():
         lines = f.readlines()
         f.close()
 
-        if lines[0].startswith('#!/usr/bin/env python'):
-            print(f'"{filename}" already has a header')
+        try:
+            if lines[0].startswith('#!/usr/bin/env python'):
+                print(f'"{filename}" already has a header')
 
-            return
+                return
+
+        # Must be an empty file, which is fine.
+        except IndexError:
+            pass
 
     else:
 
@@ -68,6 +73,8 @@ def main():
     micro = sys.version_info.micro
     py_ver = f'{major}.{minor}.{micro}'
 
+    divider = "#" + ' -' * 15 + "PEP8 length guide" + '- ' * 15 + '-'
+
     # Create new lines to prepend to the original file
     new_lines = \
         '#!/usr/bin/env python\n' \
@@ -82,6 +89,8 @@ def main():
         f'__copyright__ = "Copyright {year}, {name}"\n' \
         f'__python_version__ = "{py_ver}"\n' \
         '\n' \
+        f'{divider}' \
+        '\n' \
         '\n'
 
     lines.insert(0, new_lines)
@@ -92,6 +101,8 @@ def main():
     new_f.close()
 
     os.system(f'subl {filename}')
+
+    print(len(divider))
 
 
 if __name__ == '__main__':
